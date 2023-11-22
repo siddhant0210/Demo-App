@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.provider.ContactsContract.CommonDataKinds.Email
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 
 class Login : AppCompatActivity() {
@@ -20,6 +21,7 @@ class Login : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
+        supportActionBar?.hide()
 
         mAuth = FirebaseAuth.getInstance()
         edtEmail = findViewById(R.id.edit_email)
@@ -42,6 +44,14 @@ class Login : AppCompatActivity() {
     }
 
     private fun login(email: String, password: String){
-
+        mAuth.createUserWithEmailAndPassword(email, password)
+            .addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
+                    val intent = Intent(this@Login, MainActivity::class.java)
+                    startActivity(intent)
+                } else {
+                    Toast.makeText(this@Login, "User Does not exist", Toast.LENGTH_SHORT).show()
+                }
+            }
     }
 }
